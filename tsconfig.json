@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "esModuleInterop": true,
+        "sourceMap": true,
+        "baseUrl": "./",
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "declaration": true,
+        "types": [
+            "node", // 默认引入 node 的类型声明
+        ],
+    }
+}
