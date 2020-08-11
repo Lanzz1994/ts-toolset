@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
-        "moduleResolution": "node",
+        //"moduleResolution": "node",
         "importHelpers": true,
         "esModuleInterop": true,
         "sourceMap": true,
@@ -11,7 +11,14 @@
         "allowSyntheticDefaultImports": true,
         "declaration": true,
         "types": [
-            "node", // 默认引入 node 的类型声明
-        ],
-    }
+            // 默认引入 node 的类型声明
+            "node",
+            "jest"
+        ]
+    },
+    "exclude": [
+        "node_modules",
+        "dist",
+        "tests"
+    ]
 }

@@ -12,7 +12,7 @@
         "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
         "args": [
           "-P",
-          "${workspaceRoot}/tests/tsconfig.json",
+          "${workspaceRoot}/tsconfig.json",
           "${workspaceRoot}/tests/index.ts", // 入口文件
         ]
       }
