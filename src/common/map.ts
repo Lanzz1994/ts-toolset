@@ -10,7 +10,7 @@ export interface IKeyIterator<K> {
 }
 
 
-export function mergeList<T>(map: Map<string, T>, list: T[], key: string | Function) {
+export function mergeListToMap<T>(map: Map<string, T>, list: T[], key: string | Function) {
     let targetKey: any = key;
     if (typeof key === 'function') {
         list.forEach(v => {
@@ -21,4 +21,3 @@ export function mergeList<T>(map: Map<string, T>, list: T[], key: string | Funct
         list.forEach(v => hasOwnProperty.call(v, targetKey) && map.set(targetKey, v));
     }
 }
-

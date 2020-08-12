@@ -14,7 +14,7 @@
             // 默认引入 node 的类型声明
             "node",
             "jest"
-        ]
+        ],
     },
     "exclude": [
         "node_modules",

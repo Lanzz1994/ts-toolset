@@ -5,8 +5,10 @@ export type ArrayGroupData<T> = KVU<{ alone: T[] }, T[]>;
 
 export namespace arrutils {
 
-    export function tail<T>(array: ArrayLike<T>, n: number = 0): T {
-        return array[array.length - (1 + n)];
+    export function tail<T>(array: ArrayLike<T>, n: number = 0): T | undefined {
+        return array.length > n
+            ? array[array.length - (1 + n)]
+            : undefined;
     }
 
     export function headTail<T>(arr: ArrayLike<T>): [T, T] {
@@ -26,7 +28,7 @@ export namespace arrutils {
         return Array.isArray(target) ? target : [target];
     }
 
-    export function groupByField<T>(list: T[], field: string, nullKey: string = 'notField') {
+    export function groupByField<T>(list: T[], field: string, nullKey: string = 'notField'): KV<T[]> {
         let result: KV<T[]> = { [nullKey]: [] };
         list.forEach((v: any) => {
             let targetKey = v[field];
@@ -37,6 +39,16 @@ export namespace arrutils {
                 : result[nullKey].push(v);
         });
         return result;
+    }
+
+    export function split<T>(arr: T[], size: number): T[][] {
+        let target: T[][] = [];
+        if (arr.length > 0) {
+            for (let i = 0; i < arr.length; i += size) {
+                target.push(arr.slice(i, i + size));
+            }
+        }
+        return target;
     }
 
 }
