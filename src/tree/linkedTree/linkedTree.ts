@@ -1,7 +1,7 @@
 import omit from 'lodash/omit';
-import { types } from '../../common/types';
 import { KV } from '../../types';
 import { deepClone } from '../../common/object';
+import { isFunction } from '../../common/types';
 import { loopDFSTail as treeLoopDFSTail } from '../tree/utils';
 import { insert, remove, setBefore, setAfter, setFirst, setLast, destroy, bubble, loopDFSTail } from './utils';
 
@@ -163,7 +163,7 @@ export class LinkedTree<T> {
     map(source: LinkedTreeNode<T>, callback: (current: LinkedTreeNode<T>, children: any[]) => any): LinkedTree<T>;
     map(source: any, callback?: any): LinkedTree<T> {
         let mapNode = source;
-        if (types.isFunction(source))
+        if (isFunction(source))
             mapNode = this._root;
         loopDFSTail(mapNode, (current, childrenResults) => callback(current, childrenResults));
         return this;

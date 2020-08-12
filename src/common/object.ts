@@ -1,10 +1,10 @@
-import { types } from './types';
+import { isEmpty, isObject } from './types';
 
 type ObjectKey = number | string;
 
 /** 根据 嵌套属性路径 获取嵌套对象的值 */
 export function getObjectNest<T>(obj: any, path: ObjectKey[]): T | undefined {
-    if (path.length > 0 && types.isObject(obj)) {
+    if (path.length > 0 && isObject(obj)) {
         let current = obj;
         for (let key of path) {
             current = current[key];
@@ -20,7 +20,7 @@ export function getObjectNest<T>(obj: any, path: ObjectKey[]): T | undefined {
 export function assignValids(...params: any[]) {
     let target = Object.assign({}, ...params);
     Object.keys(target).forEach(key =>
-        types.isEmpty(target[key]) && (delete target[key])
+        isEmpty(target[key]) && (delete target[key])
     );
     return target;
 }

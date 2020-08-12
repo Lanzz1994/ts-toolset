@@ -4,7 +4,8 @@
   "description": "integrating some tool function and data structure and algorithm",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",

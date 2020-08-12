@@ -1,9 +1,9 @@
-import { arrutils } from '../../src/common/array';
+import { groupByField, split } from '../../src/common/array';
 
 describe('common/array', function () {
-    test('arrutils.groupByField', function () {
+    test('groupByField', function () {
 
-        let group = arrutils.groupByField([{
+        let group = groupByField([{
             value: 1,
             group: 'group1'
         }, {
@@ -20,9 +20,9 @@ describe('common/array', function () {
         console.log(group);
     });
 
-    test('arrutils.split', function () {
+    test('split', function () {
 
-        let splits = arrutils.split([{
+        let splits = split([{
             value: 1,
             group: 'group1'
         }, {
