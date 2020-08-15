@@ -5,14 +5,14 @@ import { isFunction } from '../../common/types';
 import { loopDFSTail as treeLoopDFSTail } from '../tree/utils';
 import { insert, remove, setBefore, setAfter, setFirst, setLast, destroy, bubble, loopDFSTail } from './utils';
 
-export type FormatOptions<T> = {
+type FormatOptions<T> = {
     format?: (data: T) => KV,
     childrenField?: string,
     useTreeForamt?: boolean,
     sourceNode?: LinkedTreeNode<T>
 }
 
-export type ImportOptions<T> = {
+type ImportOptions<T> = {
     coverRoot?: boolean
 } & FormatOptions<T>;
 
