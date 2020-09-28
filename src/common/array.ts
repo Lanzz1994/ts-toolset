@@ -1,12 +1,6 @@
 import { KV } from '../types';
 import { hasOwnProperty } from './global';
 
-export function tail<T>(array: ArrayLike<T>, n: number = 0): T | undefined {
-    return array.length > n
-        ? array[array.length - (1 + n)]
-        : undefined;
-}
-
 export function headTail<T>(arr: ArrayLike<T>): [T, T] {
     return [arr[0], arr[arr.length - 1]];
 }
@@ -24,7 +18,7 @@ export function toArray<T>(target: T | T[]): T[] {
     return Array.isArray(target) ? target : [target];
 }
 
-export function groupByField<T>(list: T[], field: string, nullKey: string = 'notField'): KV<T[]> {
+export function groupByField<T>(list: T[], field: string, nullKey: string = 'noGroup'): KV<T[]> {
     let result: KV<T[]> = { [nullKey]: [] };
     list.forEach((v: any) => {
         let targetKey = v[field];
@@ -45,4 +39,22 @@ export function split<T>(arr: T[], size: number): T[][] {
         }
     }
     return target;
+}
+
+export function isEmptyArray(arr: any[] | undefined) {
+    return Array.isArray(arr) ? arr.length === 0 : true;
+}
+
+export function mergeNestArray(list: any[], keys: string[]) {
+    const [first, ...rest] = list;
+    keys.forEach(key => {
+        if (Array.isArray(first[key])) {
+            rest.forEach(v =>
+                Array.isArray(v[key]) && (
+                    first[key] = first[key].concat(v[key])
+                )
+            );
+        }
+    });
+    return first;
 }

@@ -1,4 +1,4 @@
-import { isEmpty, isObject } from './types';
+import { isEmpty, isObject, isUndefined } from './types';
 
 type ObjectKey = number | string;
 
@@ -25,6 +25,28 @@ export function assignValids(...params: any[]) {
     return target;
 }
 
+/** 根据路径设置 深层嵌套 的属性 */
+export function assignDeep(path: string[], target: any, value: any, forceAssign?: boolean) {
+    
+    if (path.length === 0) return;
+
+    let setTarget = target;
+    path = path.concat();
+    while (path.length > 1) {
+        let key = path.shift()!;
+        if (isUndefined(setTarget[key])) {
+            if (forceAssign) {
+                setTarget[key] = {};
+            } else {
+                return;
+            }
+        }
+        setTarget = setTarget[key];
+    }
+    setTarget[path[0]] = value;
+}
+
+/** 深度拷贝，仅支持属性 */
 export function deepClone(target: any) {
     return JSON.parse(JSON.stringify(target));
 }
@@ -49,3 +71,16 @@ export function getPartialProperty<T>(obj: any, keys: ObjectKey[], clone: boolea
     keys.forEach(key => result[key] = obj[key]);
     return clone ? deepClone(result) : result;
 }
+
+/** 包裹 对象的属性 到指定到嵌套对象属性里 */
+export function wrapObj(obj: any, wrapField: string, excludes: string[]) {
+    const wrap: any = {};
+    Object.keys(obj).forEach(key => {
+        if (!excludes.includes(key)) {
+            wrap[key] = obj[key];
+            delete obj[key];
+        }
+    });
+    obj[wrapField] = wrap;
+}
+

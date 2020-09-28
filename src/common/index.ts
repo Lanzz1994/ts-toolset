@@ -2,6 +2,7 @@ export * as $arr from './array';
 export * as $convert from './convert';
 export * as $decorator from './decorators';
 export * as $file from './file';
+export * as $callback from './callback';
 export * from './global';
 export * from './guid';
 export * from './lifecycle';

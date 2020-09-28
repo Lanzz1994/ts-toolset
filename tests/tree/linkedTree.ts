@@ -38,7 +38,9 @@ describe('tree/linkedTree', function () {
 
         let json1 = tree.export();
 
-        
+        tree.dispose();
+
+        let height = tree.getNodeHeight(node1, node1);
 
         debugger;
 

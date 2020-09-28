@@ -1,9 +1,11 @@
 import omit from 'lodash/omit';
 import { KV } from '../../types';
+import { IDisposable } from '../../common';
 import { deepClone } from '../../common/object';
 import { isFunction } from '../../common/types';
 import { loopDFSTail as treeLoopDFSTail } from '../tree/utils';
 import { insert, remove, setBefore, setAfter, setFirst, setLast, destroy, bubble, loopDFSTail } from './utils';
+
 
 type FormatOptions<T> = {
     format?: (data: T) => KV,
@@ -39,14 +41,24 @@ export class LinkedTreeNode<T> {
     get lastChild() { return this._lastChild; }
     get children() { return this._children; }
     get isLeaf() { return this._children.length === 0; }
-    get isRoot() { return this._parent === undefined; }
+    get hasParent() { return this._parent !== undefined; }
 
     constructor(data: T, clone: boolean = false) {
         this.data = clone ? deepClone(data) : data;
     }
+
+    hasAncestor(ancestor: LinkedTreeNode<T>) {
+        let has = false;
+        bubble(this, (current) => {
+            has = current === ancestor;
+            return !has;
+        });
+        return has;
+    }
+
 }
 
-export class LinkedTree<T> {
+export class LinkedTree<T> implements IDisposable {
 
     private _root: LinkedTreeNode<T>;
 
@@ -56,13 +68,22 @@ export class LinkedTree<T> {
         this._root = new LinkedTreeNode<T>(data);
     }
 
-    setRoot(node: LinkedTreeNode<T>) {
-        this._root = node;
+    isRoot(target: LinkedTreeNode<T>) {
+        this._root === target;
+    }
+
+    setRoot(data: T): LinkedTree<T>;
+    setRoot(node: LinkedTreeNode<T> | T): LinkedTree<T>;
+    setRoot(node: LinkedTreeNode<T> | T): any {
+        this._root = node instanceof LinkedTreeNode
+            ? node
+            : new LinkedTreeNode(node);
+        return this;
     }
 
     //#region add node 
     addToBefore(source: LinkedTreeNode<T>, target: LinkedTreeNode<T>) {
-        if (!target.isRoot) {
+        if (!target.hasParent) {
             insert(source, target.parent!);
             setBefore(source, target);
         }
@@ -70,7 +91,7 @@ export class LinkedTree<T> {
     }
 
     addToAfter(source: LinkedTreeNode<T>, target: LinkedTreeNode<T>) {
-        if (!target.isRoot) {
+        if (!target.hasParent) {
             insert(source, target.parent!);
             setAfter(source, target);
         }
@@ -92,7 +113,7 @@ export class LinkedTree<T> {
 
     //#region move node 
     private _canMoveRemove(source: LinkedTreeNode<T>) {
-        if (source.isRoot) {
+        if (source.hasParent) {
             return false;
         } else {
             remove(source);
@@ -101,7 +122,7 @@ export class LinkedTree<T> {
     }
 
     private _canMoveToSibling(source: LinkedTreeNode<T>, target: LinkedTreeNode<T>) {
-        if (target.isRoot) {
+        if (target.hasParent) {
             return false;
         } else {
             remove(source);
@@ -142,10 +163,12 @@ export class LinkedTree<T> {
     //#region delete node 
     separate(target: LinkedTreeNode<T>) {
         remove(target);
+        return this;
     }
 
     remove(target: LinkedTreeNode<T>) {
         destroy(target);
+        return this;
     }
     //#endregion
 
@@ -159,14 +182,23 @@ export class LinkedTree<T> {
         return has;
     }
 
-    map(callback: (current: LinkedTreeNode<T>, children: any[]) => any): LinkedTree<T>;
-    map(source: LinkedTreeNode<T>, callback: (current: LinkedTreeNode<T>, children: any[]) => any): LinkedTree<T>;
-    map(source: any, callback?: any): LinkedTree<T> {
+    getNodeHeight(source: LinkedTreeNode<T>, root: LinkedTreeNode<T>) {
+        if (source === root) return 0;
+        let distance = -1,
+            complete = bubble(source, (current) => {
+                distance++;
+                return current !== root;
+            });
+        return complete ? -1 : distance;
+    }
+
+    map(callback: (current: LinkedTreeNode<T>, children: any[]) => any): any;
+    map(source: LinkedTreeNode<T>, callback: (current: LinkedTreeNode<T>, children: any[]) => any): any;
+    map(source: any, callback?: any): any {
         let mapNode = source;
         if (isFunction(source))
             mapNode = this._root;
-        loopDFSTail(mapNode, (current, childrenResults) => callback(current, childrenResults));
-        return this;
+        return loopDFSTail(mapNode, (current, childrenResults) => callback(current, childrenResults));
     }
 
     bubble(source: LinkedTreeNode<T>, fn: (parent: LinkedTreeNode<T>) => boolean | void) {
@@ -216,6 +248,11 @@ export class LinkedTree<T> {
         });
 
         return result.fmtValue;
+    }
+
+    dispose() {
+        loopDFSTail(this._root, destroy);
+        return this;
     }
     //#endregion
 

@@ -167,10 +167,15 @@ export function loopDFSTail<T>(
 }
 
 export function bubble<T>(tree: LinkedTreeNode<T>, handle: (current: LinkedTreeNode<T>) => boolean | void) {
-    let top: LinkedTreeNode<T> = tree;
+    let top: LinkedTreeNode<T> = tree,
+        complete: boolean = true;
     while (top._parent) {
-        if (handle(top) === false) break;
+        if (handle(top) === false) {
+            complete = false;
+            break;
+        }
         top = top._parent;
     }
+    return complete;
 }
 

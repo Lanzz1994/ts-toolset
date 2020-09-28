@@ -1,4 +1,4 @@
-import { groupByField, split } from '../../src/common/array';
+import { mergeNestArray, groupByField, split } from '../../src/common/array';
 
 describe('common/array', function () {
     test('groupByField', function () {
@@ -40,5 +40,11 @@ describe('common/array', function () {
         }], 2);
 
         console.log(splits);
+    });
+
+    test('mergeNestArray', function () {
+        let arr1 = [{ arr: [1, 2, 3] }, { arr: [4, 5, 6] }];
+        let merge = mergeNestArray(arr1, ['arr']);
+        console.log(merge);
     });
 });

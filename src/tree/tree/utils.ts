@@ -1,4 +1,8 @@
 import { KV } from '../../types';
+import { JoinNode } from './types';
+import { isString } from '../../common/types';
+import { wrapObj } from '../../common/object';
+import { mergeListToMap } from '../../common/map';
 
 export type LoopHandleResult<T = any> = {
     parent?: T,
@@ -39,4 +43,61 @@ export function loopDFSTail(
     }
 
     return handle(tree, currentResults);
+}
+
+export function loopBFS(tree: KV | KV[], callback: (tree: KV) => any): void;
+export function loopBFS(tree: KV | KV[], childFiled: string, callback: (tree: KV) => any): void;
+export function loopBFS(tree: KV | KV[], childFiledOrCallback?: any, callback?: any) {
+    let loops: KV[] = Array.isArray(tree) ? [...tree] : [tree];
+    let childFiled = 'children', handle = childFiledOrCallback;
+    if (isString(childFiledOrCallback)) {
+        childFiled = childFiledOrCallback;
+        handle = callback;
+    }
+
+    while (loops.length) {
+        let current = loops.shift() as KV;
+        if (handle(current) !== false)
+            current[childFiled] && loops.push(...current[childFiled]);
+    }
+}
+
+export type BuildTreeDataOptions = {
+    key: string;
+    joinNodeKey: string;
+    wrapField?: string;
+    childrenField?: string;
+    clearJoinNode?: boolean;
+}
+
+export function buildTreeByJoinNode<T>(source: T[], { childrenField = 'children', clearJoinNode = true, ...options }: BuildTreeDataOptions) {
+    const sourceMap = new Map(), treeData: any[] = [];
+    mergeListToMap(sourceMap, source, options.key);
+    sourceMap.forEach((n: any) => {
+
+        const { right, parent }: JoinNode = isString(options.joinNodeKey) ? n[options.joinNodeKey] : n;
+        const parentNode = parent && sourceMap.get(parent), rightNode = right && sourceMap.get(right);
+
+        // 预设 子节点集合对象
+        let children: any[] = treeData; // 没有父节点时，做为根处理
+        if (parentNode) {
+            // 线性数据是无序的，有可能先遍历到子节点再到父节点
+            !Array.isArray(parentNode[childrenField]) && (parentNode[childrenField] = []);
+            children = parentNode[childrenField];
+        }
+        // 上一段代码可能已经处理过空对象到情况，如果数组已经存在则不赋值
+        !Array.isArray(n[childrenField]) && (n[childrenField] = []);
+
+        // 处理 右边节点
+        let index = rightNode ? children.findIndex(v => v[options.key] === rightNode[options.key]) : -1;
+        index > -1 ? children.splice(index, 1, n, children[index]) : children.push(n);
+
+        // 清除 连接节点
+        clearJoinNode && options.joinNodeKey && delete n[options.joinNodeKey];
+
+        // 包裹 指定属性
+        options.wrapField && wrapObj(n, options.wrapField, [childrenField]);
+    });
+
+    return treeData;
 }

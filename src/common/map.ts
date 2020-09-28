@@ -13,11 +13,8 @@ export interface IKeyIterator<K> {
 export function mergeListToMap<T>(map: Map<string, T>, list: T[], key: string | Function) {
     let targetKey: any = key;
     if (typeof key === 'function') {
-        list.forEach(v => {
-            targetKey = key(v);
-            hasOwnProperty.call(v, targetKey) && map.set(targetKey, v);
-        });
+        list.forEach((v: any) => map.set(key(v), v));
     } else {
-        list.forEach(v => hasOwnProperty.call(v, targetKey) && map.set(targetKey, v));
+        list.forEach((v: any) => hasOwnProperty.call(v, targetKey) && map.set(v[targetKey], v));
     }
 }

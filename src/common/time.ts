@@ -56,6 +56,3 @@ export function dateFormat(date: Date, format: string) {
     ];
     return replaceTimePlaceholder(dateFormatPlaceholder, values, format);
 }
-
-
-
