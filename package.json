@@ -1,6 +1,6 @@
 {
   "name": "ts-toolset",
-  "version": "1.1.25",
+  "version": "1.1.36",
   "description": "integrating some tool function and data structure and algorithm",
   "main": "dist/index.js",
   "scripts": {
@@ -34,14 +34,15 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.159",
-    "lodash": "^4.17.19"
+    "immutability-helper": "^3.1.1",
+    "lodash": "^4.17.20"
   },
   "jest": {
     "rootDir": "tests",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "linkedTree.ts",
+    "testRegex": "immutability.ts",
     "moduleFileExtensions": [
       "ts",
       "tsx",

@@ -1,5 +1,5 @@
 export * as $arr from './array';
-export * as $convert from './convert';
+export * as $json from './json';
 export * as $decorator from './decorators';
 export * as $file from './file';
 export * as $callback from './callback';
@@ -14,3 +14,4 @@ export * as $object from './object';
 export * as $string from './string';
 export * as $time from './time';
 export * as $types from './types';
+export * as $immutability from './immutability';

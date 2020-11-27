@@ -74,29 +74,30 @@ export function buildTreeByJoinNode<T>(source: T[], { childrenField = 'children'
     const sourceMap = new Map(), treeData: any[] = [];
     mergeListToMap(sourceMap, source, options.key);
     sourceMap.forEach((n: any) => {
+        if (n[options.joinNodeKey]) {
+            const { right, parent }: JoinNode = n[options.joinNodeKey];
+            const parentNode = parent && sourceMap.get(parent), rightNode = right && sourceMap.get(right);
 
-        const { right, parent }: JoinNode = isString(options.joinNodeKey) ? n[options.joinNodeKey] : n;
-        const parentNode = parent && sourceMap.get(parent), rightNode = right && sourceMap.get(right);
+            // 预设 子节点集合对象
+            let children: any[] = treeData; // 没有父节点时，做为根处理
+            if (parentNode) {
+                // 线性数据是无序的，有可能先遍历到子节点再到父节点
+                !Array.isArray(parentNode[childrenField]) && (parentNode[childrenField] = []);
+                children = parentNode[childrenField];
+            }
+            // 上一段代码可能已经处理过空对象到情况，如果数组已经存在则不赋值
+            !Array.isArray(n[childrenField]) && (n[childrenField] = []);
 
-        // 预设 子节点集合对象
-        let children: any[] = treeData; // 没有父节点时，做为根处理
-        if (parentNode) {
-            // 线性数据是无序的，有可能先遍历到子节点再到父节点
-            !Array.isArray(parentNode[childrenField]) && (parentNode[childrenField] = []);
-            children = parentNode[childrenField];
+            // 处理 右边节点
+            let index = rightNode ? children.findIndex(v => v[options.key] === rightNode[options.key]) : -1;
+            index > -1 ? children.splice(index, 1, n, children[index]) : children.push(n);
+
+            // 清除 连接节点
+            clearJoinNode && options.joinNodeKey && delete n[options.joinNodeKey];
+
+            // 包裹 指定属性
+            options.wrapField && wrapObj(n, options.wrapField, [childrenField]);
         }
-        // 上一段代码可能已经处理过空对象到情况，如果数组已经存在则不赋值
-        !Array.isArray(n[childrenField]) && (n[childrenField] = []);
-
-        // 处理 右边节点
-        let index = rightNode ? children.findIndex(v => v[options.key] === rightNode[options.key]) : -1;
-        index > -1 ? children.splice(index, 1, n, children[index]) : children.push(n);
-
-        // 清除 连接节点
-        clearJoinNode && options.joinNodeKey && delete n[options.joinNodeKey];
-
-        // 包裹 指定属性
-        options.wrapField && wrapObj(n, options.wrapField, [childrenField]);
     });
 
     return treeData;

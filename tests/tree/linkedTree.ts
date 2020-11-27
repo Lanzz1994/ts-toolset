@@ -36,11 +36,13 @@ describe('tree/linkedTree', function () {
         tree.moveToAfter(node1_1, node1);
         tree.moveToAfter(node1_2, node2);
 
-        let json1 = tree.export();
+        //let json1 = tree.export();
 
-        tree.dispose();
+        //tree.dispose();
 
-        let height = tree.getNodeHeight(node1, node1);
+        //tree.addToChildrenLast(node1_2, node1_1);
+
+        let height = node1.getNodeHeight(node1);
 
         debugger;
 

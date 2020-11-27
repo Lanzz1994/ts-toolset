@@ -1,6 +1,10 @@
 import { KV } from '../types';
 import { hasOwnProperty } from './global';
 
+export function tail<T>(arr: ArrayLike<T>): T | undefined {
+    return arr.length ? arr[arr.length - 1] : undefined;
+}
+
 export function headTail<T>(arr: ArrayLike<T>): [T, T] {
     return [arr[0], arr[arr.length - 1]];
 }

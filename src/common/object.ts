@@ -83,4 +83,3 @@ export function wrapObj(obj: any, wrapField: string, excludes: string[]) {
     });
     obj[wrapField] = wrap;
 }
-

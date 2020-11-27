@@ -56,6 +56,21 @@ export class LinkedTreeNode<T> {
         return has;
     }
 
+    getNodeHeight(root?: LinkedTreeNode<T>) {
+
+        let distance: number = 0;
+        if (!this.hasParent) return distance;
+        if (root && this === root) return distance;
+
+        let complete = bubble(this, (current) => {
+            distance++;
+            if (root) {
+                return current !== root;
+            }
+        });
+        return root && complete ? -1 : distance;
+    }
+
 }
 
 export class LinkedTree<T> implements IDisposable {
@@ -182,17 +197,7 @@ export class LinkedTree<T> implements IDisposable {
         return has;
     }
 
-    getNodeHeight(source: LinkedTreeNode<T>, root: LinkedTreeNode<T>) {
-        if (source === root) return 0;
-        let distance = -1,
-            complete = bubble(source, (current) => {
-                distance++;
-                return current !== root;
-            });
-        return complete ? -1 : distance;
-    }
-
-    map(callback: (current: LinkedTreeNode<T>, children: any[]) => any): any;
+    map(callback: (current: LinkedTreeNode<T>, children: any) => any): any;
     map(source: LinkedTreeNode<T>, callback: (current: LinkedTreeNode<T>, children: any[]) => any): any;
     map(source: any, callback?: any): any {
         let mapNode = source;
