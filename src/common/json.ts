@@ -12,6 +12,3 @@ export function tryJSONParse(
     catch (e) { options.catch && options.catch(e); }
     return result;
 }
-
-
-

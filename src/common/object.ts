@@ -1,4 +1,4 @@
-import { isEmpty, isObject, isUndefined } from './types';
+import { isNegateEmpty, isObject, isUndefined } from './types';
 
 type ObjectKey = number | string;
 
@@ -20,14 +20,14 @@ export function getObjectNest<T>(obj: any, path: ObjectKey[]): T | undefined {
 export function assignValids(...params: any[]) {
     let target = Object.assign({}, ...params);
     Object.keys(target).forEach(key =>
-        isEmpty(target[key]) && (delete target[key])
+        isNegateEmpty(target[key]) && (delete target[key])
     );
     return target;
 }
 
 /** 根据路径设置 深层嵌套 的属性 */
 export function assignDeep(path: string[], target: any, value: any, forceAssign?: boolean) {
-    
+
     if (path.length === 0) return;
 
     let setTarget = target;
@@ -76,10 +76,28 @@ export function getPartialProperty<T>(obj: any, keys: ObjectKey[], clone: boolea
 export function wrapObj(obj: any, wrapField: string, excludes: string[]) {
     const wrap: any = {};
     Object.keys(obj).forEach(key => {
-        if (!excludes.includes(key)) {
-            wrap[key] = obj[key];
-            delete obj[key];
-        }
+        wrap[key] = obj[key];
+        excludes.includes(key) || Reflect.deleteProperty(obj, key);
     });
     obj[wrapField] = wrap;
+    return obj;
+}
+
+/** 扩展数组里的对象字段 */
+export function extendObjs(objs: any[], key: [string, string], wrapField?: string): void;
+export function extendObjs(objs: any[], keys: [string, string][], wrapField?: string): void;
+export function extendObjs(objs: any[], source: any, wrapField?: string) {
+
+    let keys: [string, string][] = Array.isArray(source[0]) ? source : [source];
+    let excludes = keys.map(v => v[1]);
+
+    objs.forEach(obj => {
+        wrapField && wrapObj(obj, wrapField, excludes);
+        keys.forEach(key =>
+            obj[key[1]] = wrapField
+                ? obj[wrapField][key[0]]
+                : obj[key[0]]
+        );
+    });
+    return objs;
 }

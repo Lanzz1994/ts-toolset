@@ -3,6 +3,7 @@ import { JoinNode } from './types';
 import { isString } from '../../common/types';
 import { wrapObj } from '../../common/object';
 import { mergeListToMap } from '../../common/map';
+import { tail } from '../../common/array';
 
 export type LoopHandleResult<T = any> = {
     parent?: T,
@@ -93,12 +94,23 @@ export function buildTreeByJoinNode<T>(source: T[], { childrenField = 'children'
             index > -1 ? children.splice(index, 1, n, children[index]) : children.push(n);
 
             // 清除 连接节点
-            clearJoinNode && options.joinNodeKey && delete n[options.joinNodeKey];
+            clearJoinNode && options.joinNodeKey && Reflect.deleteProperty(n, options.joinNodeKey);
 
             // 包裹 指定属性
             options.wrapField && wrapObj(n, options.wrapField, [childrenField]);
         }
     });
+
+    // 处理 lastChild,firstChild
+    if (!clearJoinNode) {
+        loopDFSTail({ [childrenField]: treeData }, childrenField, (current) => {
+            if (current._node && Array.isArray(current[childrenField]) && current[childrenField].length) {
+                let first = current[childrenField][0], last = tail<any>(current[childrenField]);
+                current._node.firstChild = first[options.key];
+                current._node.lastChild = last[options.key];
+            }
+        });
+    }
 
     return treeData;
 }

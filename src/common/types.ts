@@ -50,6 +50,6 @@ export function isFunction(obj: any): obj is Function {
     return (typeof obj === 'function');
 }
 
-export function isEmpty(obj: any, simple: boolean = false) {
+export function isNegateEmpty(obj: any) {
     return !obj && obj !== 0 && obj !== false;
 }

@@ -1,5 +1,5 @@
 import { tail } from 'lodash';
-import { isEmpty } from './types';
+import { isNegateEmpty } from './types';
 
 export function fullAssign(keys: string[], callback: (param: any) => void): any;
 export function fullAssign(source: any, callback: (param: any) => void): any;
@@ -13,7 +13,7 @@ export function fullAssign(source: any, callback: (param: any) => void): any {
             target[prop] = value;
             let resolve = true;
             for (let key of objKeys) {
-                if (isEmpty(target[key])) {
+                if (isNegateEmpty(target[key])) {
                     resolve = false;
                     break;
                 }

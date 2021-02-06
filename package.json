@@ -1,6 +1,6 @@
 {
   "name": "ts-toolset",
-  "version": "1.1.36",
+  "version": "1.1.41",
   "description": "integrating some tool function and data structure and algorithm",
   "main": "dist/index.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "immutability.ts",
+    "testRegex": "number.ts",
     "moduleFileExtensions": [
       "ts",
       "tsx",

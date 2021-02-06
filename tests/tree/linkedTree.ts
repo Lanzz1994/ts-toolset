@@ -29,12 +29,16 @@ describe('tree/linkedTree', function () {
         tree.addToChildrenLast(node2_1, node2);
         tree.addToChildrenLast(node3_1, node3);
         tree.addToChildrenFirst(node4_1, node4);
+debugger
+        tree.moveToChildrenLast(node2, node1_1);
 
         let json = tree.export();
         let tree2 = new LinkedTree().import(json);
 
-        tree.moveToAfter(node1_1, node1);
-        tree.moveToAfter(node1_2, node2);
+        // tree.moveToAfter(node1_1, node1);
+        // tree.moveToAfter(node1_2, node2);
+
+
 
         //let json1 = tree.export();
 
@@ -42,7 +46,7 @@ describe('tree/linkedTree', function () {
 
         //tree.addToChildrenLast(node1_2, node1_1);
 
-        let height = node1.getNodeHeight(node1);
+        // let height = node1.getNodeHeight(node1);
 
         debugger;
 

@@ -129,21 +129,19 @@ export class LinkedTree<T> implements IDisposable {
     //#region move node 
     private _canMoveRemove(source: LinkedTreeNode<T>) {
         if (source.hasParent) {
-            return false;
-        } else {
             remove(source);
             return true;
         }
+        return false;
     }
 
     private _canMoveToSibling(source: LinkedTreeNode<T>, target: LinkedTreeNode<T>) {
         if (target.hasParent) {
-            return false;
-        } else {
             remove(source);
             insert(source, target._parent!);
             return true;
         }
+        return false;
     }
 
     moveToBefore(source: LinkedTreeNode<T>, target: LinkedTreeNode<T>) {
@@ -157,7 +155,7 @@ export class LinkedTree<T> implements IDisposable {
     }
 
     moveToChildrenFirst(source: LinkedTreeNode<T>, target: LinkedTreeNode<T>) {
-        this._canMoveRemove(source) && this.addToChildrenFirst(source, target)
+        this._canMoveRemove(source) && this.addToChildrenFirst(source, target);
         return this;
     }
 
@@ -198,7 +196,7 @@ export class LinkedTree<T> implements IDisposable {
     }
 
     map(callback: (current: LinkedTreeNode<T>, children: any) => any): any;
-    map(source: LinkedTreeNode<T>, callback: (current: LinkedTreeNode<T>, children: any[]) => any): any;
+    map(source: LinkedTreeNode<T>, callback: (current: LinkedTreeNode<T>, children: any) => any): any;
     map(source: any, callback?: any): any {
         let mapNode = source;
         if (isFunction(source))

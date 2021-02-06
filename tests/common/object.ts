@@ -1,4 +1,4 @@
-import { assignValids, getObjectNest, flatObject, getPartialProperty, assignDeep } from '../../src/common/object';
+import { assignValids, getObjectNest, flatObject, getPartialProperty, assignDeep, extendObjs } from '../../src/common/object';
 
 describe('common/object', function () {
     test('assignValids', function () {
@@ -39,5 +39,15 @@ describe('common/object', function () {
 
         assignDeep([], targetS, 1);
         console.log(targetS);
+    });
+
+    test('extendObjs', function () {
+        let objs = [{ key: '1', name: '1' }, { key: '2', name: '2' }, { key: '3', name: '3' }];
+        extendObjs(objs, ['name', 'label']);
+        console.log(objs);
+
+        let objs1 = [{ key: '1', name: '1' }, { key: '2', name: '2' }, { key: '3', name: '3' }];
+        extendObjs(objs1, [['name', 'label'], ['key', 'key']], 'wrap');
+        console.log(objs1);
     });
 });

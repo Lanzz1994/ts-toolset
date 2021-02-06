@@ -29,7 +29,7 @@ describe('tree/utils', function () {
             { "key": "25", "name": "25", "_node": { "parent": "2", "left": "24", "right": null } },
         ];
 
-        let treeData = $tree.buildTreeByJoinNode(source, { key: 'key', joinNodeKey: '_node' });
+        let treeData = $tree.buildTreeByJoinNode(source, { key: 'key', joinNodeKey: '_node', clearJoinNode: false });
 
         console.log(JSON.stringify(treeData));
     });
